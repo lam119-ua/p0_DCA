@@ -4,8 +4,8 @@
 using namespace std;
 
 struct Bird {
-        int x;
-        int y;
+        float x;
+        float y;
         float vy; //Velocidad vertical
 };
 

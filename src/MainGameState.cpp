@@ -1,7 +1,10 @@
 extern "C" {
     #include <raylib.h>
 }
+#include "StateMachine.hpp"
 #include "MainGameState.hpp"
+#include "GameOverState.hpp"
+#include "GameState.hpp"
 #include <iostream>
 using namespace std;
 
@@ -10,14 +13,14 @@ MainGameState::MainGameState(){
 }
 
 void MainGameState::init(){
-    player.x = 200;
-    player.y = 200;
+    player.x = 200.0f;
+    player.y = 200.0f;
     player.vy = 0.0f;
 }
 
 void MainGameState::handleInput(){
     if(IsKeyPressed(KEY_SPACE)){
-        player.vy = -50.0f;
+        player.vy = -300.0f;
     }
 }
 
@@ -26,7 +29,14 @@ void MainGameState::update(float deltaTime){
     //Actualizar jugador
     player.vy += gravedad * deltaTime;
     player.y += player.vy * deltaTime;
-    player.vy = 0.0f;
+    //player.vy = 0.0f;
+
+    //Bounding box del jugador
+    Rectangle playerBox;
+    playerBox.x = player.x - 17.0f;
+    playerBox.y = player.y - 17.0f;
+    playerBox.height = 17.0f;
+    playerBox.width = 17.0f;
 
     //Temporizador de spawn
     spawnTimer += deltaTime;
@@ -68,12 +78,19 @@ void MainGameState::update(float deltaTime){
         pipes[i].bot.x -= PIPE_SPEED * deltaTime;
     }
 
+    //Comprobamos las colisiones con todas las tuberias
+    for(size_t i = 0; i < pipes.size(); i++){
+        if(CheckCollisionRecs(playerBox, pipes[i].top) || CheckCollisionRecs(playerBox, pipes[i].bot)){
+            //Colision detectada
+            this->state_machine->add_state(make_unique<GameOverState>(), true);
+        }
+    }
+
     //Comprobar si las tuberísa salen de la pantalla
     //PIPE_W < 0 comprueba si ha salido por la izquierda
     while(!pipes.empty() && pipes.front().top.x + PIPE_W < 0){
         pipes.pop_front();
     }
-
 }
 
 void MainGameState::render(){
