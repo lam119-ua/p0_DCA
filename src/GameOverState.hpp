@@ -7,7 +7,7 @@ using namespace std;
 class GameOverState: public GameState
 {
     public:
-        GameOverState() = default;
+        GameOverState(int finalScore);
         ~GameOverState() override = default;
         
         //Sobreescribimos los metodos virtuales
@@ -17,5 +17,7 @@ class GameOverState: public GameState
         void render() override;
         void pause() override;
         void resume() override;
-        
+    
+    private:
+        int score;
 };

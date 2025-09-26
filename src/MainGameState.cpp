@@ -16,6 +16,18 @@ void MainGameState::init(){
     player.x = 200.0f;
     player.y = 200.0f;
     player.vy = 0.0f;
+
+    //Cargar texturas
+    birdSprite = LoadTexture("assets/redbird-midflap.png");
+    pipeSprite = LoadTexture("assets/pipe-green.png");
+
+    player.width = birdSprite.width;
+    player.height = birdSprite.height;
+
+    PIPE_H = pipeSprite.height;
+    PIPE_W = pipeSprite.width;
+
+    gap = player.height * 4.5f;
 }
 
 void MainGameState::handleInput(){
@@ -33,10 +45,10 @@ void MainGameState::update(float deltaTime){
 
     //Bounding box del jugador
     Rectangle playerBox;
-    playerBox.x = player.x - 17.0f;
-    playerBox.y = player.y - 17.0f;
-    playerBox.height = 17.0f;
-    playerBox.width = 17.0f;
+    playerBox.x = player.x - player.width / 2.0f;
+    playerBox.y = player.y - player.height / 2.0f;
+    playerBox.height = player.height;
+    playerBox.width = player.width;
 
     //Temporizador de spawn
     spawnTimer += deltaTime;
@@ -76,13 +88,18 @@ void MainGameState::update(float deltaTime){
     for(size_t i = 0; i < pipes.size(); i++){
         pipes[i].top.x -= PIPE_SPEED * deltaTime;
         pipes[i].bot.x -= PIPE_SPEED * deltaTime;
+
+        if(!pipes[i].scored && pipes[i].top.x + PIPE_W < player.x){
+            score++;
+            pipes[i].scored = true;
+        }
     }
 
     //Comprobamos las colisiones con todas las tuberias
     for(size_t i = 0; i < pipes.size(); i++){
         if(CheckCollisionRecs(playerBox, pipes[i].top) || CheckCollisionRecs(playerBox, pipes[i].bot)){
             //Colision detectada
-            this->state_machine->add_state(make_unique<GameOverState>(), true);
+            this->state_machine->add_state(make_unique<GameOverState>(score), true);
         }
     }
 
@@ -104,28 +121,21 @@ void MainGameState::render(){
     DrawText("Bienvenido a Flappy Bird DCA", 20, 20, 20, BLACK);
 
     //Dibujamos el pajaro
-    DrawCircle(player.x, player.y, 17.0f, RED);
+    DrawTexture(birdSprite, player.x - player.width / 2, player.y - player.height / 2, WHITE);
 
     for(size_t i = 0; i < pipes.size(); i++){
+        PipePair &p = pipes[i];
 
-        //Tubería superior
-        DrawRectangle(
-            pipes[i].top.x,
-            pipes[i].top.y,
-            pipes[i].top.width,
-            pipes[i].top.height,
-            GREEN
-        );
+        // Tubería superior (rota 180°)
+        DrawTextureEx(pipeSprite, {p.top.x + PIPE_W, p.top.y + PIPE_H}, 180.f, 1.0f, WHITE);
 
-        //Tubería inferior
-        DrawRectangle(
-            pipes[i].bot.x,
-            pipes[i].bot.y,
-            pipes[i].bot.width,
-            pipes[i].bot.height,
-            GREEN
-        );
+        // Tubería inferior
+        DrawTextureEx(pipeSprite, {p.bot.x, p.bot.y}, 0.f, 1.0f, WHITE);
+        
     }
+    
+    // void DrawText(const char *text, int posX, int posY, int fontSize, Color color); 
+    DrawText(to_string(score).c_str(), 60, 60, 30, DARKBLUE);
 
     //Finalizamos el render
     EndDrawing();

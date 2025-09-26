@@ -7,6 +7,8 @@ struct Bird {
         float x;
         float y;
         float vy; //Velocidad vertical
+        float height; //Alto del sprite
+        float width; //Ancho del sprite
 };
 
 struct PipePair {
@@ -35,8 +37,8 @@ class MainGameState : public GameState
         const float gravedad = 500.0f;
 
         //Tamaño de las tuberías:
-        const int PIPE_W = 32;
-        const int PIPE_H = 320;
+        int PIPE_W = 32;
+        int PIPE_H = 320;
         const float PIPE_SPEED = 100.0f;
         const float space = 30.0f;
 
@@ -45,5 +47,13 @@ class MainGameState : public GameState
         //Temporizador tuberías
         float spawnTimer = 0.0f;
         float spawnEvery = 2.0f;
+
+        //Puntuación del jugador
+        int score = 0;
+
+        Texture2D birdSprite;
+        Texture2D pipeSprite;
+
+        float gap; //ESapcio libre entre tuberias
 
 };

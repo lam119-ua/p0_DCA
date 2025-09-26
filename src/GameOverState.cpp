@@ -7,6 +7,10 @@ extern "C" {
 #include "GameState.hpp"
 #include <iostream>
 
+GameOverState::GameOverState(int finalScore){
+    score = finalScore;
+}
+
 void GameOverState::init(){
 
 }
@@ -27,6 +31,8 @@ void GameOverState::render(){
     ClearBackground(RAYWHITE);
 
     DrawText("Game Over", 75, 256, 30, BLACK);
+
+    DrawText(to_string(score).c_str(), 144, 200, 30, DARKBLUE);
 
     EndDrawing();
 }
