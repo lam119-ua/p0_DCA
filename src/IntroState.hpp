@@ -1,16 +1,17 @@
 #pragma once
-#include <iostream>
-#include "GameOverState.hpp"
+#include "IntroState.hpp"
 #include "GameState.hpp"
+#include <iostream>
+extern "C" {
+    #include <raylib.h>
+}
 using namespace std;
 
-class GameOverState: public GameState
+class IntroState : public GameState
 {
     public:
-        GameOverState(int finalScore);
-        ~GameOverState() override = default;
-        
-        //Sobreescribimos los metodos virtuales
+        IntroState() = default;
+
         void init() override;
         void handleInput() override;
         void update(float deltaTime) override;
@@ -19,6 +20,5 @@ class GameOverState: public GameState
         void resume() override;
     
     private:
-        int score;
-        Texture2D gameOverSprite;
+        Texture2D introSprite;
 };

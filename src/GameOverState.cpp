@@ -12,7 +12,7 @@ GameOverState::GameOverState(int finalScore){
 }
 
 void GameOverState::init(){
-
+    gameOverSprite = LoadTexture("assets/gameover.png");
 }
 
 void GameOverState::handleInput(){
@@ -26,13 +26,12 @@ void GameOverState::update(float deltaTime){
 }
 
 void GameOverState::render(){
+    
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
+    DrawTexture(gameOverSprite, 55, 256, WHITE);
 
-    DrawText("Game Over", 75, 256, 30, BLACK);
-
-    DrawText(to_string(score).c_str(), 144, 200, 30, DARKBLUE);
+    //DrawText(to_string(score).c_str(), 144, 200, 30, DARKBLUE);
 
     EndDrawing();
 }

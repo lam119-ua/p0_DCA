@@ -3,6 +3,7 @@ extern "C" {
 }
 #include "StateMachine.hpp"
 #include "MainGameState.hpp"
+#include "IntroState.hpp"
 #include <memory>
 #include <chrono>
 
