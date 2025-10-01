@@ -36,7 +36,7 @@ class MainGameState : public GameState
     private:
         char entered_key;
         Bird player; //Jugador
-        const float gravedad = 500.0f;
+        const float gravedad = 850.0f;
         bool showIntro = true;
         static bool introShownBefore;
 
@@ -61,6 +61,7 @@ class MainGameState : public GameState
         Texture2D backgroundSprite;
         Texture2D scoreSprite[10];
         Texture2D introSprite;
+        Texture2D baseSprite;
 
         //Renderizado del movimiento
         Texture2D birdFrame[3]; //Array para las imagenes del pajaro

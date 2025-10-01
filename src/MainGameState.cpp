@@ -31,6 +31,7 @@ void MainGameState::init(){
     pipeSprite = LoadTexture("assets/pipe-green.png");
     backgroundSprite = LoadTexture("assets/background-day.png");
     introSprite = LoadTexture("assets/message.png");
+    baseSprite = LoadTexture("assets/base.png");
 
     //Cargamos los 3 frames del pajaro
     birdFrame[0] = LoadTexture("assets/redbird-downflap.png");
@@ -88,7 +89,7 @@ void MainGameState::update(float deltaTime){
             //Posición comienzo tuberías
             float x = GetScreenWidth();
 
-            int pipeY = GetRandomValue(50, GetScreenHeight() - gap - 50);
+            int pipeY = GetRandomValue(50, GetScreenHeight() - baseSprite.height - gap);
             int min = PIPE_H / 2;
             int max = x / 2.0f;
             int pipe_y_offset_top = GetRandomValue(min, max);
@@ -151,6 +152,10 @@ void MainGameState::update(float deltaTime){
             pipes.pop_front();
         }
 
+        if(player.y < 0 || player.y + (player.height / 2) > 418){
+            this->state_machine->add_state(make_unique<GameOverState>(score), true);
+        }
+
         frameTime += deltaTime;
 
         if(frameTime >= frameSpeed){
@@ -192,10 +197,6 @@ void MainGameState::render(){
     float drawX = player.x - (player.width / 2);
     float drawY = player.y - (player.height / 2);
 
-    //Dibujo el pajaro segun el frame
-    DrawTextureEx(birdFrame[currentFrame], {drawX, drawY}, 0.0f, birdScale, WHITE);
-
-
     if(showIntro && !introShownBefore){
         float scaleX = (float)GetScreenWidth() / introSprite.width;
         float scaleY = (float)GetScreenHeight() / introSprite.height;
@@ -214,9 +215,13 @@ void MainGameState::render(){
         DrawTextureEx(pipeSprite, {p.bot.x, p.bot.y}, 0.f, 1.0f, WHITE);
         
     }
+
+    DrawTexture(baseSprite, 0, 412, WHITE);
+
+    //Dibujo el pajaro segun el frame
+    DrawTextureEx(birdFrame[currentFrame], {drawX, drawY}, 0.0f, birdScale, WHITE);
     
     drawScore(score, GetScreenWidth() / 2, 100);
-    //DrawText(to_string(score).c_str(), 60, 60, 30, DARKBLUE);
 
     //Finalizamos el render
     EndDrawing();

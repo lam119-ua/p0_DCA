@@ -29,7 +29,7 @@ void GameOverState::render(){
     
     BeginDrawing();
 
-    DrawTexture(gameOverSprite, 55, 256, WHITE);
+    DrawTexture(gameOverSprite, 55, 200, WHITE);
 
     //DrawText(to_string(score).c_str(), 144, 200, 30, DARKBLUE);
 
